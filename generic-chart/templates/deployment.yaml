@@ -6,7 +6,7 @@ metadata:
     app: python-microservice
   {{- include "generic-chart.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.pythonMicroservice.replicas }}
+replicas: {{ .Values.pythonMicroservice.replicas }}
   selector:
     matchLabels:
       app: python-microservice
