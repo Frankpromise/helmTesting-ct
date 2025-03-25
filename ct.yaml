@@ -10,9 +10,6 @@ check-version-increment: true
 # Define Helm repository for dependencies
 helm-extra-args: "--debug"
 
-# Set namespace for testing
-namespace: chart-testing
-
 # Enable parallel execution for faster testing
 remote: false
 target-branch: master
