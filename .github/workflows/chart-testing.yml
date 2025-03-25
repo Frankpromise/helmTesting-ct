@@ -70,7 +70,7 @@ jobs:
           # Convert the repository name to lowercase
           REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
           # Package the Helm chart and tag it with the shortened SHA
-          helm package ./charts/microservice ghcr.io/$REPO_NAME/my-helm-chart:$SHORT_SHA
+          helm package generic-chart ghcr.io/$REPO_NAME/microservice:$SHORT_SHA
 
       - name: Push Helm Chart OCI Image to GitHub Container Registry
         run: |
