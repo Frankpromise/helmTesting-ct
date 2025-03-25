@@ -2,7 +2,9 @@ name: Lint and Test Helm Charts
 
 on:
   pull_request:
-
+  push:
+    branches:
+      - master  # Trigger for push to the 'master' branch (including merges)
 jobs:
   lint-test:
     runs-on: ubuntu-latest
