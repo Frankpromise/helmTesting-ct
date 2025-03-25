@@ -25,14 +25,20 @@ jobs:
       - name: Install Chart Testing Tool
         uses: helm/chart-testing-action@v2.3.1
 
-      - name: Detect Changed Charts
+      - name: Run chart-testing (list-changed)
         id: list-changed
         run: |
-          changed=$(ct list-changed --config ct.yaml)
-          if [[ -n "$changed" ]]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
+            changed=$(ct list-changed --config ct.yaml)
+            if [[ -n "$changed" ]]; then
+            echo "{changed}={true}" >> $GITHUB_OUTPUT
+            fi
 
-      - name: Lint Changed Charts
-        if: steps.list-changed.outputs.changed == 'true'
+      - name: Run chart-testing (lint)
         run: ct lint --config ct.yaml
+
+      - name: Create kind cluster
+        if: ${{ steps.list-changed.outputs.changed == 'true' }}  # Correct reference
+        uses: helm/kind-action@v1.5.0
+
+      - name: Run chart-testing (install)
+        run: ct install --config ct.yaml}
