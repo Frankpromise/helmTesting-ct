@@ -1,7 +1,7 @@
 name: Lint and Test Helm Charts
 
 on:
-  push:
+  pull_request:
 
 jobs:
   lint-test:
@@ -35,7 +35,3 @@ jobs:
 
       - name: Run chart-testing (lint)
         run: ct lint --config ct.yaml
-
-      - name: Create kind cluster
-        if: ${{ steps.list-changed.outputs.changed == 'true' }}  # Correct reference
-        uses: helm/kind-action@v1.5.0
