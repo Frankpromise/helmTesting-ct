@@ -36,11 +36,11 @@ jobs:
             fi
 
       - name: Always Lint Charts (Regardless of Changes)
-        run: ct lint --config ct.yaml  --release-label ${{ github.sha }}
+        run: ct lint --config ct.yaml ${{ github.sha }}
 
       - name: Lint Changed Charts (Only if Changes Detected)
         if: steps.list-changed.outputs.changed == 'true'
-        run: ct lint --config ct.yaml --release-label ${{ github.sha }}
+        run: ct lint --config ct.yaml ${{ github.sha }}
 
   push-docker-image:
     runs-on: ubuntu-latest
@@ -61,8 +61,12 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}/generic-chart:${{ github.sha }} .
-          
+          # Get the first 4 characters of the GitHub SHA
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-4)
+          # Tagging the image with the shortened GitHub SHA
+          docker build -t ghcr.io/${{ github.repository }}/generic-chart:$SHORT_SHA .
+
       - name: Push Docker Image to GitHub Container Registry
         run: |
-          docker push ghcr.io/${{ github.repository }}/my-helm-chart:${{ github.sha }}
+          # Push the image with the shortened GitHub SHA as the version tag
+          docker push ghcr.io/${{ github.repository }}/generic-chart:$SHORT_SHA
