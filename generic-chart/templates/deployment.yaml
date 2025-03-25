@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "generic-chart.fullname" . }}-python-microservice
+  labels:
+    app: python-microservice
+  {{- include "generic-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.pythonMicroservice.replicas }}
+  selector:
+    matchLabels:
+      app: python-microservice
+    {{- include "generic-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: python-microservice
+      {{- include "generic-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+        runAsGroup: 1000
+        runAsNonRoot: true
+      containers:
+      - env:
+        - name: DEBUG_MODE
+          value: {{ quote .Values.pythonMicroservice.pythonMicroservice.env.debugMode }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: '{{ .Values.pythonMicroservice.pythonMicroservice.image.repository }}:{{
+          .Values.pythonMicroservice.pythonMicroservice.image.tag | default .Chart.AppVersion
+          }}'
+        imagePullPolicy: {{ .Values.pythonMicroservice.pythonMicroservice.imagePullPolicy
+          }}
+        livenessProbe:
+          httpGet:
+            path: /student
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        name: python-microservice
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /student
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        resources: {{- toYaml .Values.pythonMicroservice.pythonMicroservice.resources |
+          nindent 10 }}

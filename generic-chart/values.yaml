@@ -1,0 +1,23 @@
+kubernetesClusterDomain: cluster.local
+pythonMicroservice:
+  pythonMicroservice:
+    env:
+      debugMode: "false"
+    image:
+      repository: promiserepo/python-microservice
+      tag: v2
+    imagePullPolicy: Always
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+      requests:
+        cpu: 250m
+        memory: 64Mi
+  replicas: 2
+service:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  type: NodePort

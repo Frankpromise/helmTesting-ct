@@ -1,0 +1,22 @@
+# ct.yaml - Configuration for Helm chart-testing tool
+
+# Define where charts are located
+chart-dirs:
+  - generic-chart
+
+# Ensure version updates for modified charts
+check-version-increment: true
+
+# Define Helm repository for dependencies
+helm-extra-args: "--debug"
+
+# Set namespace for testing
+namespace: chart-testing
+
+# Enable parallel execution for faster testing
+remote: false
+target-branch: master
+validate-maintainers: false
+validate-yaml: true
+debug: false
+upgrade: true
