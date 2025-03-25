@@ -42,7 +42,7 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         run: ct lint --config ct.yaml ${{ github.sha }}
 
-  push-docker-image:
+  push-helm-image:
     runs-on: ubuntu-latest
     needs: lint-test  # Ensure this job runs after lint-test job
     steps:
@@ -59,16 +59,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker Image
+      - name: Set Helm OCI Support
+        run: |
+          helm registry login ghcr.io --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package Helm Chart as OCI Image
         run: |
           # Get the first 4 characters of the GitHub SHA
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-4)
           # Convert the repository name to lowercase
           REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
-          # Tagging the image with the shortened GitHub SHA and lowercase repo name
-          docker build -t ghcr.io/$REPO_NAME/my-helm-chart:$SHORT_SHA .
+          # Package the Helm chart and tag it with the shortened SHA
+          helm chart save ./charts/my-helm-chart ghcr.io/$REPO_NAME/my-helm-chart:$SHORT_SHA
 
-      - name: Push Docker Image to GitHub Container Registry
+      - name: Push Helm Chart OCI Image to GitHub Container Registry
         run: |
-          # Push the image with the shortened GitHub SHA and lowercase repo name
-          docker push ghcr.io/$REPO_NAME/my-helm-chart:$SHORT_SHA
+          # Push the Helm chart as an OCI image
+          helm chart push ghcr.io/$REPO_NAME/my-helm-chart:$SHORT_SHA
