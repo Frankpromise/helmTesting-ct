@@ -63,16 +63,14 @@ jobs:
         run: |
           helm registry login ghcr.io --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Package Helm Chart as OCI Image
+      - name: Package and push Helm Chart as OCI Image
         run: |
-          # Get the first 4 characters of the GitHub SHA
+          # Define variables
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-4)
-          # Convert the repository name to lowercase
           REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
-          # Package the Helm chart and tag it with the shortened SHA
-          helm package generic-chart ghcr.io/$REPO_NAME/generic-chart:$SHORT_SHA
+          
+          # Package the Helm chart
+          helm package ./generic-chart --version 0.1.0-$SHORT_SHA
 
-      - name: Push Helm Chart OCI Image to GitHub Container Registry
-        run: |
           # Push the Helm chart as an OCI image
-          helm push ghcr.io/$REPO_NAME/generic-chart:$SHORT_SHA
+          helm push generic-chart-0.1.0-$SHORT_SHA.tgz oci://ghcr.io/$REPO_NAME
