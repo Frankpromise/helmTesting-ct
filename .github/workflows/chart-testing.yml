@@ -61,7 +61,9 @@ jobs:
       - name: Generate Short SHA
         run: echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-4)" >> $GITHUB_ENV
 
-      - name: Save and Push Helm Chart as OCI Image
+      - name: Package Helm Chart
+        run: helm package ./generic-chart --destination .
+
+      - name: Push Helm Chart to GHCR
         run: |
-          helm chart save ./generic-chart ghcr.io/${{ env.REPO_NAME }}/generic-chart:0.1.0-${{ env.SHORT_SHA }}
-          helm chart push ghcr.io/${{ env.REPO_NAME }}/generic-chart:0.1.0-${{ env.SHORT_SHA }}
+          helm push generic-chart-*.tgz oci://ghcr.io/${{ env.REPO_NAME }}
