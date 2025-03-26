@@ -13,7 +13,7 @@ spec:
     {{- include "generic-chart.selectorLabels" . | nindent 6 }}
   template:
   metadata:
-      labels:
+  labels:
         app: python-microservice
       {{- include "generic-chart.selectorLabels" . | nindent 8 }}
     spec:
