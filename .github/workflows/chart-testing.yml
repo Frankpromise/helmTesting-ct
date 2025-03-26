@@ -25,15 +25,11 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Run Helm Lint (Regardless of Changes)
+      - name: Run Helm Lint
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Run helm lint on your chart directory
-          helm lint ./generic-chart
-
-      - name: Lint Changed Charts (Only if Changes Detected)
-        if: ${{ github.event.pull_request.head.sha != github.event.pull_request.base.sha }}
-        run: |
-          # Run helm lint only if there are changes
           helm lint ./generic-chart
 
   push-helm-image:
