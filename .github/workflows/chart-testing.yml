@@ -68,9 +68,9 @@ jobs:
           # Define variables
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-4)
           REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
-          
+
           # Package the Helm chart
           helm package ./generic-chart --version 0.1.0-$SHORT_SHA
 
           # Push the Helm chart as an OCI image
-          helm push generic-chart-0.1.0-$SHORT_SHA.tgz oci://ghcr.io/$REPO_NAME
+          helm push generic-chart-0.1.0-$SHORT_SHA.tgz oci://ghcr.io/${{ github.repository }}
