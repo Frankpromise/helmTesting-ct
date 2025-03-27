@@ -57,4 +57,4 @@ jobs:
 
       - name: Push Helm Chart to GHCR
         run: |
-          helm push generic-chart-*.tgz oci://ghcr.io/frankpromise/helmtesting-ct
+          helm push generic-chart-*.tgz oci://ghcr.io/$REPO_NAME
