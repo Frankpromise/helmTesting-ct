@@ -11,10 +11,6 @@ on:
 jobs:
   lint-test:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      repository-projects: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -23,6 +19,8 @@ jobs:
 
       - name: Set up Helm
         uses: azure/setup-helm@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -30,8 +28,6 @@ jobs:
           python-version: "3.9"
 
       - name: Run Helm Lint
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Run helm lint on your chart directory
           helm lint ./generic-chart
